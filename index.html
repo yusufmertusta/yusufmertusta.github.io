@@ -73,7 +73,7 @@
 </head>
 
 <body>
-    <h2>Bana </h2>
+    <h2>Mektubun ilk 3 kelimesi </h2>
     <div class="login-box">
         <input type="password" id="password" placeholder="Parolanızı girin" />
         <button id="submit-btn">eminim</button>
@@ -110,7 +110,7 @@
     const passRef = ref(database, 'keyword/');  // "keyword" veritabanı yolunu alıyoruz
     get(passRef).then((snapshot) => {
         if (snapshot.exists()) {
-            const storedKeyword = snapshot.val().keyword;  // Firebase'den çekilen parola
+            const storedKeyword = snapshot.val();  // Firebase'den çekilen parola
             if (enteredKeyword === storedKeyword) {
                 alert("Giriş başarılı!");
                 window.location.href = "pages.html";  // Giriş başarılıysa yönlendirme
