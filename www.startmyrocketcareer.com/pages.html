@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>yaşanmış değil</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <link href="../cdn.prod.website-files.com/671a5ddd8cc5f0fb025e4a0f/css/rocket-mlo-landing-page.1f02a15ac.min.css"
+    rel="stylesheet" type="text/css" />
+  <link href="../cdn.prod.website-files.com/671a5ddd8cc5f0fb025e4a0f/67891c4a39fb71f3f2570301_Favicon.png"
+    rel="shortcut icon" type="image/x-icon" />
+  <link href="../cdn.prod.website-files.com/671a5ddd8cc5f0fb025e4a0f/67891c4ecdf82c0577113464_webclip.png"
+    rel="apple-touch-icon" />
+  <style>
+    body {
+      -moz-font-smoothing: antialiased;
+      -o-font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased;
+      font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overscroll-behavior-y: none;
+      overflow-x: clip;
+    }
+
+    /*Text Selection Color*/
+    ::selection {
+      background: var(--colors--red);
+      color: var(--colors--white);
+    }
+
+    ::-moz-selection {
+      background: var(--colors--red);
+      color: var(--colors--white);
+    }
+
+    /*Reset apple form styles*/
+    input,
+    textarea,
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      background-image: none;
+      caret-color: var(--colors--black);
+    }
+
+    /* Gün linkler için stil */
+    .day-navigation {
+      position: fixed;
+      top: 50%;
+      right: 2rem;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .day-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .day-link:hover {
+      background: var(--colors--red);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .day-link.active {
+      background: var(--colors--red);
+      color: white;
+    }
+
+    /* Günlük yazıları için stil */
+    .diary-content {
+      padding: 2rem 0;
+      color: white;
+    }
+
+    .diary-text {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .diary-text p {
+      margin-bottom: 1.5rem;
+    }
+
+    @media screen and (max-width: 768px) {
+      .day-navigation {
+        right: 1rem;
+      }
+      
+      .day-link {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+      }
+      
+      .diary-text {
+        font-size: 1rem;
+        padding: 0 1rem;
+      }
+    }
+  </style>
+
+  <script>
+  // Sayfa kaydırıldıkça opaklık değişimini sağlayan fonksiyon
+window.addEventListener('scroll', function() {
+  var h2Elements = document.querySelectorAll('h2'); // Tüm h2 etiketlerini seç
+  var scrollY = window.scrollY; // Sayfa kaydırma miktarını al
+
+  h2Elements.forEach(function(h2) {
+    var rect = h2.getBoundingClientRect();
+    var elementTop = rect.top + scrollY;
+    var relativeScroll = scrollY - elementTop + 400; // 200px offset
+    
+    // Kaydırma miktarına göre opaklık değeri belirle
+    var opacity = 1 - relativeScroll / 5; // 400px mesafede kaybolsun
+    
+    // Opaklık sınırlarını kontrol et (0 ile 1 arasında)
+    if (opacity < 0) {
+      opacity = 0;
+    }
+    if (opacity > 1) {
+      opacity = 1;
+    }
+    
+    // h2'nin opaklık değerini ayarla
+    h2.style.opacity = opacity;
+  });
+});
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const swiper = new Swiper(".swiper", {
+        centeredSlides: true,
+        slidesPerView: 1,
+        spaceBetween: 20,
+        effect: "fade",
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+          renderBullet: function (index, className) {
+            return `<div class="${className}"></div>`;
+          },
+        },
+      });
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Gün navigasyon linkleri -->
+  <div class="day-navigation">
+    <a href="#day0" class="day-link" data-day="0">0</a>
+    <a href="#day1" class="day-link" data-day="1">1</a>
+    <a href="#day2" class="day-link" data-day="2">2</a>
+    <a href="#day3" class="day-link" data-day="3">3</a>
+    <a href="#day4" class="day-link" data-day="4">4</a>
+    <a href="#day5" class="day-link" data-day="5">5</a>
+  </div>
+
+  <div class="page-wrapper">
+    <div class="w-embed">
+      <style>
+        :root {
+          --col-gap: clamp(1.5rem, 1.3143rem + 0.7619vw, 2rem);
+        }
+
+        /* Remove top margin on rich text first child */
+        .w-richtext>:first-child {
+          margin-top: 0;
+        }
+
+        /* Remove bottom margin of rich text last child */
+        .w-richtext>:last-child,
+        .w-richtext ol li:last-child,
+        .w-richtext ul li:last-child {
+          margin-bottom: 0;
+        }
+
+        video {
+          width: 100%;
+          object-fit: cover;
+        }
+
+        video.wf-empty {
+          padding: 0;
+        }
+
+        .btn-link::after {
+          transform-origin: right;
+          transform: scaleX(0);
+          transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+          background-color: currentColor;
+          bottom: -0.125em;
+          content: "";
+          height: 0.125em;
+          left: 0;
+          position: absolute;
+          width: 100%;
+        }
+
+        .btn-link:hover::after {
+          transform: scaleX(1);
+          transform-origin: left;
+        }
+
+        .line {
+          overflow: clip;
+        }
+
+        .swiper-slide-active {
+          .swiper_top {
+            transform: scale(1.05);
+          }
+        }
+
+        @keyframes hero-arrow {
+          from {
+            transform: translateY(0rem);
+          }
+
+          to {
+            transform: translateY(1rem);
+          }
+        }
+
+        .hero_arrow {
+          animation: hero-arrow 3s ease-in-out infinite alternate;
+        }
+
+        /* Desktop (992px and above) */
+        @media screen and (min-width: 992px) {
+
+          .u-md-only,
+          .u-sm-only,
+          .u-xs-only {
+            display: none;
+          }
+        }
+
+        /* Tablet (768px to 991px) */
+        @media screen and (min-width: 768px) and (max-width: 991px) {
+
+          .u-sm-only,
+          .u-xs-only,
+          .u-lg-only {
+            display: none;
+          }
+        }
+
+        /* Mobile Landscape (480px to 767px) */
+        @media screen and (min-width: 480px) and (max-width: 767px) {
+
+          .u-lg-only,
+          .u-md-only,
+          .u-xs-only {
+            display: none;
+          }
+        }
+
+        /* Mobile Portrait (up to 479px) */
+        @media screen and (max-width: 479px) {
+
+          .u-lg-only,
+          .u-md-only,
+          .u-sm-only {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+  </div>
+    <main class="main-wrapper">
+      <!-- Gün 0 -->
+      <div class="hero" id="day0">
+        <section class="hero section">
+          <div class="hero_scroll-parent">
+            <div class="hero_scroll">
+              <div class="u-align-center">yaşanmış değil</div><svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                viewBox="0 0 16 68" fill="none" class="hero_arrow u-sm-hide">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M15.0714 61.0346L8.70741 67.3985C8.31688 67.789 7.68372 67.789 7.29319 67.3985L0.929231 61.0346C0.538707 60.644 0.538707 60.0109 0.929231 59.6203C1.31976 59.2298 1.95292 59.2298 2.34345 59.6203L7.0003 64.2772L7.0003 0.757813L9.0003 0.757813L9.0003 64.2772L13.6572 59.6203C14.0477 59.2298 14.6808 59.2298 15.0714 59.6203C15.4619 60.0109 15.4619 60.644 15.0714 61.0346Z"
+                  fill="currentColor"></path>
+              </svg><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 16 35" fill="none"
+                class="hero_arrow u-sm-xs-only">
+                <path
+                  d="M7.5761 34.2325C7.96662 34.623 8.59979 34.623 8.99031 34.2325L15.3543 27.8685C15.7448 27.478 15.7448 26.8448 15.3543 26.4543C14.9637 26.0638 14.3306 26.0638 13.9401 26.4543L8.2832 32.1112L2.62635 26.4543C2.23583 26.0638 1.60266 26.0638 1.21214 26.4543C0.821612 26.8448 0.821612 27.478 1.21214 27.8685L7.5761 34.2325ZM7.2832 0.113281L7.2832 33.5254L9.2832 33.5254L9.2832 0.113281L7.2832 0.113281Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <h1 class="h1 u-align-center cc-hero">GÜN 0 - İLK GECE</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-w-id="699221e3-dbb9-a668-d7db-58f0d13b9706" class="hero-2 section">
+          <div class="w-layout-blockcontainer container u-z-index-2 w-container">
+            <div class="hero-2_h1">
+              <h2 class="h1 u-align-center u-color-white">31.05.25</h2>
+            </div>
+            <div class="diary-content">
+              <div class="diary-text">
+                <p>Sadece sen gittin sanmıştım, beni de götürdüğünü sonradan anladım. O akşamdan beri hiç ben gibi değilim. Artık yaşamıyorum. Durumu da kabullenicek gibi değilim. Seninle tekrar konuşana, sana tekrar sarılana, seni tekrar öpene, seni tekrar görene kadar, yaşadığım hiçbir şey YAŞANMIŞ DEĞİL.</p>
+                
+                <p>O zamana kadar da SENSİZ hayatımın her gününü not etmeye karar verdim. Bu bir günlük. Ece'siz bir hayatın günlüğü.</p>
+                
+                <p>Sen gittikten sonra uzun bir süre metronun başında bekledim. Yaşanan hiçbir şeyin farkında değildim. Uyanmaya çalıştım. İnanmadım. Reddettim. Geri oturup uzun süre ağladım. Çıkıp uzunca yürüdüm. Nereye yürüdüğümü bilmiyordum, bunu yazarken de hatırlamıyorum. Yürüdüm.</p>
+                
+                <p>Gözümü açtığımda gece 4 olmuştu. Birilerini arayıp beni almalarını istedim. Sabaha karşı eve gidip gerçeklikten kopmuş bir şekilde bayıldım. Zaten her şey kötü bir kabustu, uyanınca geçicekti.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-2_video w-embed">
+            <div style="width: 100%; height: 100%;background-color: black;" class="w-background-video">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Gün 1 -->
+      <div class="hero" id="day1">
+        <section class="hero section">
+          <div class="hero_scroll-parent">
+            <div class="hero_scroll">
+              <div class="u-align-center">yaşanmış değil</div><svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                viewBox="0 0 16 68" fill="none" class="hero_arrow u-sm-hide">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M15.0714 61.0346L8.70741 67.3985C8.31688 67.789 7.68372 67.789 7.29319 67.3985L0.929231 61.0346C0.538707 60.644 0.538707 60.0109 0.929231 59.6203C1.31976 59.2298 1.95292 59.2298 2.34345 59.6203L7.0003 64.2772L7.0003 0.757813L9.0003 0.757813L9.0003 64.2772L13.6572 59.6203C14.0477 59.2298 14.6808 59.2298 15.0714 59.6203C15.4619 60.0109 15.4619 60.644 15.0714 61.0346Z"
+                  fill="currentColor"></path>
+              </svg><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 16 35" fill="none"
+                class="hero_arrow u-sm-xs-only">
+                <path
+                  d="M7.5761 34.2325C7.96662 34.623 8.59979 34.623 8.99031 34.2325L15.3543 27.8685C15.7448 27.478 15.7448 26.8448 15.3543 26.4543C14.9637 26.0638 14.3306 26.0638 13.9401 26.4543L8.2832 32.1112L2.62635 26.4543C2.23583 26.0638 1.60266 26.0638 1.21214 26.4543C0.821612 26.8448 0.821612 27.478 1.21214 27.8685L7.5761 34.2325ZM7.2832 0.113281L7.2832 33.5254L9.2832 33.5254L9.2832 0.113281L7.2832 0.113281Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <h1 class="h1 u-align-center cc-hero">GÜN 1 - Hazİran</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-w-id="699221e3-dbb9-a668-d7db-58f0d13b9706" class="hero-2 section">
+          <div class="w-layout-blockcontainer container u-z-index-2 w-container">
+            <div class="hero-2_h1">
+              <h2 class="h1 u-align-center u-color-white">01.06.25</h2>
+            </div>
+            <div class="diary-content">
+              <div class="diary-text">
+                <p>Sabah oldu mu bilmiyorum. Tüm gün uyumuşum, gözümü azıcık açsam güvenparka karşımda oturan seni görüyordum. Canım yanıyordu, hiç böyle bir korku hissetmemiştim. Akşama kadar uyudum, gerçekten bu kadar korktuğum olmamıştı.</p>
+                
+                <p>Sen rüyalarımdan da neyin var neyin yok gidince, rüyalarımda bile yalnız kaldım. Tatlı rüyalarda sen kalmayınca, korkunç gerçeklikte SENİN acını hissedebilmek çok cazip geldi. Peşinden koştum o acının, uyandım.</p>
+                
+                <p>Çok hasta olmuşum. Çok hasta olmam biliyorsun.. Aslında durum çok öyle değil, hasta olurum, ama hiç hastaymış gibi hissetmezdim. Hasta değilmiş gibi davranınca hasta gibi de olmazdım. Hemen iyileşirdim. Artık yapamıyorum Ece. Sanki verem olmuşum, karşı koyamıyorum, direnç gösteremiyorum. Senden başka dert düşünemiyorum. Senden başka bir şeyle uğraşamıyorum.</p>
+
+                <p>Akşam birileriyle konuşmak istedim. Dışarı çıkıp oturdum. Öksürmekten konuşamadım. Bir filtre kahve içtim, boğazıma iyi geldiği kadar seni anlattım. Kimse anlamadı...</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-2_video w-embed">
+            <div style="width: 100%; height: 100%;background-color: black;" class="w-background-video">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Gün 2 -->
+      <div class="hero" id="day2">
+        <section class="hero section">
+          <div class="hero_scroll-parent">
+            <div class="hero_scroll">
+              <div class="u-align-center">yaşanmış değil</div><svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                viewBox="0 0 16 68" fill="none" class="hero_arrow u-sm-hide">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M15.0714 61.0346L8.70741 67.3985C8.31688 67.789 7.68372 67.789 7.29319 67.3985L0.929231 61.0346C0.538707 60.644 0.538707 60.0109 0.929231 59.6203C1.31976 59.2298 1.95292 59.2298 2.34345 59.6203L7.0003 64.2772L7.0003 0.757813L9.0003 0.757813L9.0003 64.2772L13.6572 59.6203C14.0477 59.2298 14.6808 59.2298 15.0714 59.6203C15.4619 60.0109 15.4619 60.644 15.0714 61.0346Z"
+                  fill="currentColor"></path>
+              </svg><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 16 35" fill="none"
+                class="hero_arrow u-sm-xs-only">
+                <path
+                  d="M7.5761 34.2325C7.96662 34.623 8.59979 34.623 8.99031 34.2325L15.3543 27.8685C15.7448 27.478 15.7448 26.8448 15.3543 26.4543C14.9637 26.0638 14.3306 26.0638 13.9401 26.4543L8.2832 32.1112L2.62635 26.4543C2.23583 26.0638 1.60266 26.0638 1.21214 26.4543C0.821612 26.8448 0.821612 27.478 1.21214 27.8685L7.5761 34.2325ZM7.2832 0.113281L7.2832 33.5254L9.2832 33.5254L9.2832 0.113281L7.2832 0.113281Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <h1 class="h1 u-align-center cc-hero">GÜN 2 - İŞBAŞI</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-w-id="699221e3-dbb9-a668-d7db-58f0d13b9706" class="hero-2 section">
+          <div class="w-layout-blockcontainer container u-z-index-2 w-container">
+            <div class="hero-2_h1">
+              <h2 class="h1 u-align-center u-color-white">02.06.25</h2>
+            </div>
+            <div class="diary-content">
+              <div class="diary-text">
+                <p>Dün gece yatakta dönüp durdum, uyuyamadım. Sabah mesai var. 1 saat 43 dakika uyumuşum, uyandım. Giyinmeye başladım. Beyaz kazağından kaçmaya çalıştım. Ama baktım ki çoktan giymişim. Çıkardım, istemezsin gibi geldi özür dilerim. Başka bir şey giyip, çıktım.</p>
+                
+                <p>Çalışmak iyi geldi öğlene kadar kafamı kaldırmadan çalıştım. Yemekten önce sigaraya çıktım, Ahmet abi geldi, nasılsın abi dedim, kötü dedi, sen nasılsın? Kötü dedim, noldu diye sordu. Ece demek istedim ama ağzımdan hastayım çıkabildi. Ahmet ben de dedi. Belki o da başka bir şey söyledi ama ağzından "ben de" çıktı. Çok düşünmedim.</p>
+                
+                <p>Düzenli olarak hesaplarına, profillerine bakmaya başladığımı farkettim. Sürekli, sürekli, sürekli.. Tek başıma yemeğe gittim, tüm gün herkesten kaçtım. Geldim, çıkana kadar tekrar çalıştım. Çıkmadan önce Emrah zorla molaya çıkarttı. Son birkaç saattir yaptıklarımı anlatırken, araya girip, "sen çok kötü gözüküyosun" dedi. Hastayım abi dedim. İnanmadı. Gitsene dedi. Çalışmak iyi geliyor abi dedim. Mesai bitiminden 1 saat sonra ofisten çıktım.</p>
+                
+                <p>Eve dönerken, yolda gözüm seni aradı. Artık eskisinden çok daha yavaş yürüyorum. Artık çok daha ağır hissediyorum kendimi. Ama aslında yürürken seni kaçırmaktan korkuyorum, yanımdan geçer de göremezsem diye yavaş yürüyorum, herkesin yüzüne bakıp seni arıyorum.</p>
+                
+                <p>Yüzüme bakıp da anlamamak için salak olmak lazım. Annem noldu dedi, hastayım dedim. Sen hasta olmazsın dedi. Anlattım. Ece. Hoşuna gitmediyse özür dilerim. Anlattım. Detaylarını kendime saklıcam.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-2_video w-embed">
+            <div style="width: 100%; height: 100%;background-color: black;" class="w-background-video">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Gün 3 -->
+      <div class="hero" id="day3">
+        <section class="hero section">
+          <div class="hero_scroll-parent">
+            <div class="hero_scroll">
+              <div class="u-align-center">yaşanmış değil</div><svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                viewBox="0 0 16 68" fill="none" class="hero_arrow u-sm-hide">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M15.0714 61.0346L8.70741 67.3985C8.31688 67.789 7.68372 67.789 7.29319 67.3985L0.929231 61.0346C0.538707 60.644 0.538707 60.0109 0.929231 59.6203C1.31976 59.2298 1.95292 59.2298 2.34345 59.6203L7.0003 64.2772L7.0003 0.757813L9.0003 0.757813L9.0003 64.2772L13.6572 59.6203C14.0477 59.2298 14.6808 59.2298 15.0714 59.6203C15.4619 60.0109 15.4619 60.644 15.0714 61.0346Z"
+                  fill="currentColor"></path>
+              </svg><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 16 35" fill="none"
+                class="hero_arrow u-sm-xs-only">
+                <path
+                  d="M7.5761 34.2325C7.96662 34.623 8.59979 34.623 8.99031 34.2325L15.3543 27.8685C15.7448 27.478 15.7448 26.8448 15.3543 26.4543C14.9637 26.0638 14.3306 26.0638 13.9401 26.4543L8.2832 32.1112L2.62635 26.4543C2.23583 26.0638 1.60266 26.0638 1.21214 26.4543C0.821612 26.8448 0.821612 27.478 1.21214 27.8685L7.5761 34.2325ZM7.2832 0.113281L7.2832 33.5254L9.2832 33.5254L9.2832 0.113281L7.2832 0.113281Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <h1 class="h1 u-align-center cc-hero">GÜN 3 - İLK SALI</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-w-id="699221e3-dbb9-a668-d7db-58f0d13b9706" class="hero-2 section">
+          <div class="w-layout-blockcontainer container u-z-index-2 w-container">
+            <div class="hero-2_h1">
+              <h2 class="h1 u-align-center u-color-white">03.06.25</h2>
+            </div>
+            <div class="diary-content">
+              <div class="diary-text">
+                <p>Yine aynı iş günü. Bugün daha çok çalıştım. Bugün daha çok hastayım. Yaşadığım her şeyi sana anlatma ihtiyacını çok hissediyorum. Senin neler yaşadığını DELİ GİBİ merak ediyorum. Seni bilemiyorum, belki sen beni bilirsin diye birkaç gündür bu siteyi kodluyorum. Sensiz hayatımın günlüğünü tutuyorum. Kara bir günlük gibi, dönüp tekrar okumuyorum. Siteyi bir an önce bitirip, yazdıklarımı da ekleyip sana dolaylı olarak ulaştırmak istiyorum. Aslında emin değilim. Benden uzak kalmanı çok iyi anlıyorum, zaten o yüzden tüm bu yükün altından kalkmıyorum. Sana dokunmuyorum, yaklaşmıyorum, saygı duyuyorum. Ama dayanamıyorum.</p>
+                
+                <p>Ece özür dilerim, sana çok sinirliyim. Elimde değil. Hayat senden sonra çok sessizleşti. Yalnızlık çok umurumda değil ama sensizliğe dayanamıyorum. Çekip gitmeni kaldıramıyorum. Bir gün böyle bir ayrılık yaşayacağımızı hiç düşünmemiştim. Bıraktığın boşluk dolucak gibi değil. Doldurmak da zaten istemiyorum. Döneceğin günü bekliyorum. Herkes gider bilirdim. Senin gidişini aklıma bile getirmedim. Bıraktığın yara, senden olduğu için çok mutluyum ama acısını kaldıramıyorum.</p>
+                
+                <p>Yine kimseyle konuşmadım, tek başıma yemek yedim. İşten çıktım eve dönüyorum. İki gündür, utanç verici, aptalca bir umutla belki mesai çıkışı ofisin önünde seni görürüm diye etrafa bakınıyorum. Kızılaya indim, ağır ağır yürüyorum. Güvenparka gidip bir dal sigara içtim. SENİ GÖRDÜM... Seni gördüm sandım.. Yüreğim ağzıma geldi. İnsanları sana benzetmeye, etrafta senin kokunu duymaya başladım.</p>
+                
+                <p>Her yerde sen ama bu kadar gerçekçi, nasıl?? DELİRİYORUM</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-2_video w-embed">
+            <div style="width: 100%; height: 100%;background-color: black;" class="w-background-video">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Gün 4 -->
+      <div class="hero" id="day4">
+        <section class="hero section">
+          <div class="hero_scroll-parent">
+            <div class="hero_scroll">
+              <div class="u-align-center">yaşanmış değil</div><svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                viewBox="0 0 16 68" fill="none" class="hero_arrow u-sm-hide">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M15.0714 61.0346L8.70741 67.3985C8.31688 67.789 7.68372 67.789 7.29319 67.3985L0.929231 61.0346C0.538707 60.644 0.538707 60.0109 0.929231 59.6203C1.31976 59.2298 1.95292 59.2298 2.34345 59.6203L7.0003 64.2772L7.0003 0.757813L9.0003 0.757813L9.0003 64.2772L13.6572 59.6203C14.0477 59.2298 14.6808 59.2298 15.0714 59.6203C15.4619 60.0109 15.4619 60.644 15.0714 61.0346Z"
+                  fill="currentColor"></path>
+              </svg><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 16 35" fill="none"
+                class="hero_arrow u-sm-xs-only">
+                <path
+                  d="M7.5761 34.2325C7.96662 34.623 8.59979 34.623 8.99031 34.2325L15.3543 27.8685C15.7448 27.478 15.7448 26.8448 15.3543 26.4543C14.9637 26.0638 14.3306 26.0638 13.9401 26.4543L8.2832 32.1112L2.62635 26.4543C2.23583 26.0638 1.60266 26.0638 1.21214 26.4543C0.821612 26.8448 0.821612 27.478 1.21214 27.8685L7.5761 34.2325ZM7.2832 0.113281L7.2832 33.5254L9.2832 33.5254L9.2832 0.113281L7.2832 0.113281Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <h1 class="h1 u-align-center cc-hero">GÜN 4</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-w-id="699221e3-dbb9-a668-d7db-58f0d13b9706" class="hero-2 section">
+          <div class="w-layout-blockcontainer container u-z-index-2 w-container">
+            <div class="hero-2_h1">
+              <h2 class="h1 u-align-center u-color-white">04.06.25</h2>
+            </div>
+            <div class="diary-content">
+              <div class="diary-text">
+                <p>Hastalığım giderek artıyor. Bugün işe gitmedim. Yine tüm gün uyudum. 10 kere rüya gördüysem 10unda da sen vardın. Hepsini teker teker sana anlatmak istedim, anlatamadım. Sonuncusu çok garipti, yanımdaydın, sarılıp yatıyorduk. Gözlerin çok güzeldi, gözlerine bakıyordum. Sonra burası aklıma geldi. Dedim ECE DÖNMÜŞ. Daha yazmama gerek kalmadı. Bu rüyayı gördüğümde kodlamam hala bitmemişti. Allahım dedim, şükürler olsun bitirmeme gerek kalmadı. Allahım dedim ECE DÖNDÜ.</p>
+                
+                <p>Yavaş yavaş, sancılı sancılı uyandım. Çekip giden gerçek Sen, yanımda yatan Eceyi, tırnaklarıyla parçaladı. Ondan kalan parçaları da alıp kendisiyle götürdü. Yine Ecesiz kalmıştım.</p>
+                
+                <p>Annem Eceyle görüştün mü, konuştunuz mu diye soruyor arada. Utanıyorum, cevaplamıyorum. Sana çok sinirliyim, ama kendimden NEFRET ediyorum. Hepsinden çok SENİ ÇOK SEVİYORUM. Sana sitemimi hoşgör, ne desen ne yapsan haklısın aslında, biliyorum. Sensizlik çok zor nasıl anlatırım bilmiyorum. Anlayabilir misin, sanmıyorum.</p>
+                
+                <p>Akşam çocuklar eryamana geldi. Kafamı dağıtmaya çalışıyolar anlıyorum, kafamda sadece sen varsın, dağılsın istemiyorum. Hala çok hastayım, iyileşemiyorum.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-2_video w-embed">
+            <div style="width: 100%; height: 100%;background-color: black;" class="w-background-video">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Gün 4 -->
+      <div class="hero" id="day5">
+        <section class="hero section">
+          <div class="hero_scroll-parent">
+            <div class="hero_scroll">
+              <div class="u-align-center">yaşanmış değil</div><svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                viewBox="0 0 16 68" fill="none" class="hero_arrow u-sm-hide">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M15.0714 61.0346L8.70741 67.3985C8.31688 67.789 7.68372 67.789 7.29319 67.3985L0.929231 61.0346C0.538707 60.644 0.538707 60.0109 0.929231 59.6203C1.31976 59.2298 1.95292 59.2298 2.34345 59.6203L7.0003 64.2772L7.0003 0.757813L9.0003 0.757813L9.0003 64.2772L13.6572 59.6203C14.0477 59.2298 14.6808 59.2298 15.0714 59.6203C15.4619 60.0109 15.4619 60.644 15.0714 61.0346Z"
+                  fill="currentColor"></path>
+              </svg><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 16 35" fill="none"
+                class="hero_arrow u-sm-xs-only">
+                <path
+                  d="M7.5761 34.2325C7.96662 34.623 8.59979 34.623 8.99031 34.2325L15.3543 27.8685C15.7448 27.478 15.7448 26.8448 15.3543 26.4543C14.9637 26.0638 14.3306 26.0638 13.9401 26.4543L8.2832 32.1112L2.62635 26.4543C2.23583 26.0638 1.60266 26.0638 1.21214 26.4543C0.821612 26.8448 0.821612 27.478 1.21214 27.8685L7.5761 34.2325ZM7.2832 0.113281L7.2832 33.5254L9.2832 33.5254L9.2832 0.113281L7.2832 0.113281Z"
+                  fill="currentColor"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <h1 class="h1 u-align-center cc-hero">GÜN 5 - Yarın bayram, bayramda küslük olmaz kİ</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section data-w-id="699221e3-dbb9-a668-d7db-58f0d13b9706" class="hero-2 section">
+          <div class="w-layout-blockcontainer container u-z-index-2 w-container">
+            <div class="hero-2_h1">
+              <h2 class="h1 u-align-center u-color-white">05.06.25</h2>
+            </div>
+            <div class="diary-content">
+              <div class="diary-text">
+                <p>Dün gece son 5 gündür sabah akşam okuduğum bir şiiri twit attım. Umarım görmüşsündür. Benden uzak kalma isteğine olan saygımla, senden uzak kalmanın zorluğu arasında eriyip yitiyorum. Burayı sana, sadece sana nasıl ulaştırıcam bilmiyorum. Sen dönene kadar burayı güncellemeye devam edicem. Sensiz hayatı normalleştirmeyeceğim. Sensiz hayatın sensiz bir hayat olduğunu unutmayacağım. Buradan haberdar olup olmadığını bile bilmeyeceğim. Belki bunları hiç görmeyeceksin, hiç haberin bile olmayacak. Göreceksin, umursamayacaksın. Umursayacaksın yada okumak istemeyeceksin. İhtimallerin hepsi beni korkutuyor. Ben sana yazamıyorum. ama iletişimsiz de kalamıyorum. Tüm ümidimle şüphe duymadan yazmaya devam edeceğim.</p>
+                
+                <p>Yarın bayram. Ece biliyor musun, bizimkiler boşandığından beri bayramlardan nefret ediyorum. Sen acaba şuan ne yapıyorsun. Ceylan abla gidiyor sanırım. Sen evde misin, batıkentte mi olucaksın? Finallerin var biliyorum. Nasıl gidiyor çalışabiliyor musun. Efe bu ara sürekli ders çalışıyor. Efeyi gördükçe aklıma senin sınavların, naptığın geliyor. Keşke dersleriniz bitmeseydi, okulda efeyle karşılaşsaydınız. Efe akşam eve gelince senden haber getirseydi. Eceyi gördüm deseydi, dinleseydim... Anlattığı her harfte yüzünü görürdüm.</p>
+                
+                <p>Yarın bayram. Annem kurban kesicek, yalnız kalmasın diye onunla teyzemlere geldim. Bugün hakkında yazarken ağlamaya başladım, birilerinin görmesinden korkuyorum. Salonda tek başıma oturuyorum. Ece biliyor musun bayramlardan nefret ediyorum. Ama en çok sensizlikten nefret ediyorum. Ece, anlıyor musun?</p>
+                
+                <p>Gün bitmediği için burayı ucu açık bırakıyorum. Ve tekrar söylüyorum. Seni çok seviyorum. Hiçbir şeyi özlemediğim kadar seni özlüyorum.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hero-2_video w-embed">
+            <div style="width: 100%; height: 100%;background-color: black;" class="w-background-video">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- footer -->
+      <div class="hero-foot" id="footer">
+        <section class="hero-foot section">
+          <div class="w-layout-blockcontainer container w-container">
+            <div class="row">
+              <div class="col col-lg-12">
+                <p>Sesini duymadığım gün</p>
+                
+                <p>Yaşanmış değil</p>
+                
+                <p>Açan çiçek değil</p>
+                
+                <p>Öten kuş değil</p>
+
+                <p>Yüzünü görmediğim gün</p>
+                
+                <p>İçimde yıldızlar sönük</p>
+                
+                <p>Güneşler güneş değil</p>
+                
+                <p>Seni sevmediğim gün</p>
+
+                <p>Seni anmadığım gün</p>
+                
+                <p>Olacak iş değil...</p>
+             
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      </main>
+</body>
+</html>
