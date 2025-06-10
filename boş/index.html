@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
+    <style>
+        @font-face {
+            font-family: 'font1';
+            src: url('/Galgo-Light.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-kerning: auto;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: font1, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            width: 1000px;
+            top: 25%;
+            left: 0%;
+            position: relative;
+        }
+
+        h2 {
+            font-size: 9.5vw;
+            margin: 0;
+            position: absolute;
+            top: 30%;
+            left: 40%;
+            transform: translate(-50%, -40%);
+            z-index: -1;
+            font-weight: bold;
+        }
+
+        /* Mobil uyumlu düzenlemeler */
+        @media screen and (max-width: 600px) {
+            h2 {
+                font-size: 12vw; /* Daha küçük font boyutu */
+                top: 20%;
+            }
+
+            .login-box {
+                padding: 20px;
+                width: 90%;
+            }
+        }
+
+        input[type="password"] {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            width: 100%;
+            border-radius: 10px;
+            background-color: #1b1b1b59;
+            color: #ffffff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            border: 5px solid #3d0606;
+            color: #000000;
+            font-size: 1.1em;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Mektubun ilk 3 kelimesi </h2>
+    <div class="login-box">
+        <input type="password" id="password" placeholder="Parolanızı girin" />
+        <button id="submit-btn">eminim</button>
+        <p id="error-message" style="color: red; display: none;">Yanlış parola, tekrar deneyin.</p>
+    </div>
+
+    <!-- Firebase SDK ve Modüller -->
+    <script type="module">
+        // Firebase SDK'larını import et
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";  // Firebase Database modülü
+
+        // Firebase projenizin yapılandırması
+        const firebaseConfig = {
+            apiKey: "AIzaSyCvSl3uaEDOHMgsff3KSeSiIGUIjJlOaaE",
+            authDomain: "login-cb73a.firebaseapp.com",
+            projectId: "login-cb73a",
+            storageBucket: "login-cb73a.firebasestorage.app",
+            messagingSenderId: "588391214494",
+            appId: "1:588391214494:web:25fefbc2dc409e695bfa8f",
+            measurementId: "G-BE9S3H9QXV"
+        };
+
+        // Firebase'i başlat
+        const app = initializeApp(firebaseConfig);
+
+        // Firebase veritabanı bağlantısını doğru URL ile başlat
+        const database = getDatabase(app, "https://login-cb73a-default-rtdb.europe-west1.firebasedatabase.app/");
+
+        // Fonksiyonu dışarıya açıyoruz
+        window.checkKeyword = function() {
+    const enteredKeyword = document.getElementById('password').value;  // Parola kutusundan alınan veri
+
+    const passRef = ref(database, 'keyword/');  // "keyword" veritabanı yolunu alıyoruz
+    get(passRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            const storedKeyword = snapshot.val();  // Firebase'den çekilen parola
+            if (enteredKeyword === storedKeyword) {
+                alert("Giriş başarılı!");
+                window.location.href = "/snap.licdn.com/li.lms-analytics/pages.html";  // Giriş başarılıysa yönlendirme
+            } else {
+                alert("Yanlış parola, tekrar deneyin.");
+            }
+        } else {
+            alert("Parola bulunamadı.");
+        }
+    }).catch((error) => {
+        console.error("Veritabanı hatası:", error);
+        alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+    });
+}
+
+    </script>
+
+    <script>
+        // Button'a tıklama olayını ekliyoruz
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            checkKeyword();  // checkKeyword fonksiyonunu çalıştır
+        });
+    </script>
+
+</body>
+
+</html>
