@@ -36,7 +36,7 @@
         }
 
         h2 {
-            font-size: 32vw;
+            font-size: 9.5vw;
             margin: 0;
             position: absolute;
             top: 30%;
@@ -44,6 +44,19 @@
             transform: translate(-50%, -40%);
             z-index: -1;
             font-weight: bold;
+        }
+
+        /* Mobil uyumlu düzenlemeler */
+        @media screen and (max-width: 600px) {
+            h2 {
+                font-size: 12vw; /* Daha küçük font boyutu */
+                top: 20%;
+            }
+
+            .login-box {
+                padding: 20px;
+                width: 90%;
+            }
         }
 
         input[type="password"] {
@@ -73,7 +86,7 @@
 </head>
 
 <body>
-    <h2>Bana </h2>
+    <h2>Mektubun ilk 3 kelimesi </h2>
     <div class="login-box">
         <input type="password" id="password" placeholder="Parolanızı girin" />
         <button id="submit-btn">eminim</button>
@@ -110,7 +123,7 @@
     const passRef = ref(database, 'keyword/');  // "keyword" veritabanı yolunu alıyoruz
     get(passRef).then((snapshot) => {
         if (snapshot.exists()) {
-            const storedKeyword = snapshot.val().keyword;  // Firebase'den çekilen parola
+            const storedKeyword = snapshot.val();  // Firebase'den çekilen parola
             if (enteredKeyword === storedKeyword) {
                 alert("Giriş başarılı!");
                 window.location.href = "/snap.licdn.com/li.lms-analytics/pages.html";  // Giriş başarılıysa yönlendirme
